@@ -32,7 +32,9 @@ local function transition(coordinateIndex)
 	FreezeEntityPosition(cache.ped, false)
 end
 
+local currentJailTime = 0
 local function startTime(remainingJailTime)
+	currentJailTime = remainingJailTime
 	CreateThread(function ()
 		transition('insideJail')
 		utils.notify({
@@ -45,8 +47,10 @@ local function startTime(remainingJailTime)
 		while remainingJailTime > 0 do
 			Wait(1000)
 			remainingJailTime -= 1
+			if remainingJailTime < 0 then remainingJailTime = 0 end
 			lib.callback.await('jail:server:setRemainingJailTime', false, remainingJailTime)
 		end
+		currentJailTime = remainingJailTime
 		transition('outsideJail')
 		utils.notify({
 			title = 'Gefängnis',
@@ -56,6 +60,19 @@ local function startTime(remainingJailTime)
 			duration = 5000
 		})
 	end)
+end
+
+if settings.command.use then
+	RegisterCommand(settings.command.name, function (source, args, raw)
+		if currentJailTime <= 0 then return end
+		utils.notify({
+			title = 'Gefängnis',
+			description = 'Du musst noch ' ..currentJailTime.. ' HE absitzen.',
+			type = 'info',
+			duration = 5000,
+			position = 'center-left'
+		})
+	end, false)
 end
 
 CreateThread(function ()

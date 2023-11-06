@@ -40,7 +40,6 @@ lib.callback.register('jail:server:setRemainingJailTime', function (source, newT
 end)
 
 AddEventHandler('onResourceStop', function (resourceName)
-    print(resourceName, shared.resource)
     if resourceName == shared.resource and IsDuplicityVersion() then saveJailTime() end
 end)
 
@@ -50,4 +49,28 @@ end)
 
 lib.cron.new('*/15 * * * *', function()
     saveJailTime()
+end)
+
+exports('addWanteds', function (id, time)
+    local xPlayer = ESX.GetPlayerFromId(id)
+    if not xPlayer then return lib.print.warn('invalid id: ' ..id) end
+    MySQL.update.await('UPDATE `users` SET `remainingJailTime` = `remainingJailTime` + ? WHERE identifier = ?', {
+        time, xPlayer.getIdentifier()
+    })
+end)
+
+exports('setWanteds', function (id, time)
+    local xPlayer = ESX.GetPlayerFromId(id)
+    if not xPlayer then return lib.print.warn('invalid id: ' ..id) end
+    MySQL.update.await('UPDATE `users` SET `remainingJailTime` = ? WHERE identifier = ?', {
+        time, xPlayer.getIdentifier()
+    })
+end)
+
+exports('removeWanteds', function (id, time)
+    local xPlayer = ESX.GetPlayerFromId(id)
+    if not xPlayer then return lib.print.warn('invalid id: ' ..id) end
+    MySQL.update.await('UPDATE `users` SET `remainingJailTime` = CASE WHEN (`remainingJailTime` - ?) < 0 THEN 0 ELSE (`remainingJailTime` - ?) END WHERE identifier = ?', {
+        time, time, xPlayer.getIdentifier()
+    })
 end)
