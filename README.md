@@ -3,6 +3,10 @@
 
 ### Description
 Simple automatic jail-system. Performance: 0.00ms and up to 0.01ms (while in use)
+Attention: to use this script properly you need another script like an mdt to manage the jailtime. The methods for setting Jailtime are written down here but you could also just add or set values via the created column.
+
+### WIP
+This script is in the ALPHA. Use it with your own risk.
 
 ### Preview
 TODO: @mirow
