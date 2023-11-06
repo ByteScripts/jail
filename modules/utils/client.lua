@@ -26,5 +26,10 @@ function utils.generateCarLabel(carModel)
     return label
 end
 
+---@param data NotifyProps
+function utils.notify(data)
+    lib.notify(data)
+end
+
 
 return utils
