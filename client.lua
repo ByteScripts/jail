@@ -17,14 +17,14 @@ AddEventHandler('esx:setJob', function(job)
 end)
 ]]--
 local utils = require 'modules.utils.client'
-local function transition()
+local function transition(coordinateIndex)
 	SwitchOutPlayer(cache.ped, 0, 1)
 	SetDrawOrigin(0.0, 0.0, 0.0, 0)
 	SetCloudHatOpacity(1.5)
 	FreezeEntityPosition(cache.ped, true)
 	Wait(1500)
-	SetEntityCoords(cache.ped, settings.coordinates.insideJail.x, settings.coordinates.insideJail.y, settings.coordinates.insideJail.z)
-	SetEntityHeading(cache.ped, settings.coordinates.insideJail.w)
+	SetEntityCoords(cache.ped, settings.coordinates[coordinateIndex].x, settings.coordinates[coordinateIndex].y, settings.coordinates[coordinateIndex].z)
+	SetEntityHeading(cache.ped, settings.coordinates[coordinateIndex].w)
 	PlaceObjectOnGroundProperly(cache.ped)
 	Wait(1500)
 	SwitchInPlayer(cache.ped)
@@ -34,7 +34,7 @@ end
 
 local function startTime(remainingJailTime)
 	CreateThread(function ()
-		transition()
+		transition('insideJail')
 		utils.notify({
 			title = 'Gefängnis',
 			description = 'Du musst noch ' ..remainingJailTime.. ' HE sitzen.',
@@ -45,8 +45,9 @@ local function startTime(remainingJailTime)
 		while remainingJailTime > 0 do
 			Wait(1000)
 			remainingJailTime -= 1
+			lib.callback.await('jail:server:setRemainingJailTime', false, remainingJailTime)
 		end
-		transition()
+		transition('outsideJail')
 		utils.notify({
 			title = 'Gefängnis',
 			description = 'Du bist wieder frei!',
