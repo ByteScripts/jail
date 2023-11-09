@@ -17,5 +17,11 @@ return {
     command = {
         use = true,
         name = 'jailtime'
+    },
+    locales = {
+        ['notify'] = {
+            ['title'] = 'Staate Prison',
+            ['time_remaining'] = 'You have to stay for %s minutes.'
+        }
     }
 }

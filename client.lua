@@ -38,8 +38,8 @@ local function startTime(remainingJailTime)
 	CreateThread(function ()
 		transition('insideJail')
 		utils.notify({
-			title = 'Gefängnis',
-			description = 'Du musst noch ' ..remainingJailTime.. ' HE sitzen.',
+			title = settings.locales['notify']['title'],
+			description = settings.locales['notify']['time_remaining']:format(remainingJailTime),
 			type = 'info',
 			position = 'center-left',
 			duration = 5000
@@ -53,7 +53,7 @@ local function startTime(remainingJailTime)
 		currentJailTime = remainingJailTime
 		transition('outsideJail')
 		utils.notify({
-			title = 'Gefängnis',
+			title = settings.locales['notify']['title'],
 			description = 'Du bist wieder frei!',
 			type = 'info',
 			position = 'center-left',
@@ -66,8 +66,8 @@ if settings.command.use then
 	RegisterCommand(settings.command.name, function (source, args, raw)
 		if currentJailTime <= 0 then return end
 		utils.notify({
-			title = 'Gefängnis',
-			description = 'Du musst noch ' ..currentJailTime.. ' HE absitzen.',
+			title = settings.locales['notify']['title'],
+			description = settings.locales['notify']['time_remaining']:format(currentJailTime),
 			type = 'info',
 			duration = 5000,
 			position = 'center-left'
