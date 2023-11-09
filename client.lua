@@ -81,7 +81,7 @@ CreateThread(function ()
 		points = settings.zone.points,
 		onEnter = function ()
 			local remainingJailTime = lib.callback.await('jail:server:getRemainingJailTime', false)
-			if remainingJailTime > 0 then startTime(remainingJailTime) end
+			if remainingJailTime > 0 then startTime(remainingJailTime > settings.maxJailTime and settings.maxJailTime or remainingJailTime) end
 		end
 	})
 end)
