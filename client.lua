@@ -45,7 +45,7 @@ local function startTime(remainingJailTime)
 			duration = 5000
 		})
 		while remainingJailTime > 0 do
-			Wait(1000)
+			Wait(1000 * 60)
 			remainingJailTime -= 1
 			if remainingJailTime < 0 then remainingJailTime = 0 end
 			lib.callback.await('jail:server:setRemainingJailTime', false, remainingJailTime)
@@ -81,7 +81,7 @@ CreateThread(function ()
 		points = settings.zone.points,
 		onEnter = function ()
 			local remainingJailTime = lib.callback.await('jail:server:getRemainingJailTime', false)
-			if remainingJailTime > 0 then startTime(remainingJailTime) end
+			if remainingJailTime > 0 then startTime(remainingJailTime > settings.maxJailTime and settings.maxJailTime or remainingJailTime) end
 		end
 	})
 end)
